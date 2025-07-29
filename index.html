@@ -4,52 +4,45 @@
     <meta charset="utf-8" />
     <title>AR Мамонт</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-
-    <!-- AR.js для A-Frame -->
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.2/aframe/build/aframe-ar.min.js"></script>
+    <!-- AR.js -->
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
   </head>
   <body style="margin: 0; overflow: hidden">
-    <a-scene
-      embedded
-      vr-mode-ui="enabled: false"
-      arjs="sourceType: webcam; debugUIEnabled: false;"
-    >
-      <!-- Маркер з власним зображенням -->
+    <a-scene embedded arjs="sourceType: webcam;">
+      <!-- Маркер -->
       <a-marker type="pattern" url="pattern-marker.patt">
-        
         <!-- Мамонт -->
         <a-entity
-          id="mammoth"
-          gltf-model="#model"
+          gltf-model="#mammothModel"
           position="0 0 0"
-          scale="1.5 1.5 1.5"
+          scale="0.5 0.5 0.5"
+          rotation="0 0 0"
         ></a-entity>
-
-        <!-- Кнопка для відтворення звуку -->
+        
+        <!-- Кнопка відтворення аудіо -->
         <a-entity
           class="clickable"
-          geometry="primitive: plane; height: 0.3; width: 1"
+          geometry="primitive: plane; height: 0.3; width: 1.2"
           material="color: red"
           position="0 0.8 0"
-          text="value: ▶️ Слухати гіда; align: center; color: white; width: 4"
-          onclick="document.querySelector('#sound').components.sound.playSound()"
+          text="value: ▶️ Слухати гіда; align: center; color: white"
+          onclick="document.querySelector('#guideSound').components.sound.playSound()"
         ></a-entity>
       </a-marker>
 
       <!-- Камера -->
       <a-entity camera></a-entity>
 
-      <!-- Завантаження ресурсів -->
+      <!-- Ресурси -->
       <a-assets>
-        <a-asset-item id="model" src="mammoth.glb"></a-asset-item>
+        <a-asset-item id="mammothModel" src="mammoth.glb"></a-asset-item>
         <audio id="guide" src="audio.mp3"></audio>
       </a-assets>
 
-      <!-- Звук -->
-      <a-sound src="#guide" id="sound" autoplay="false"></a-sound>
+      <!-- Аудіо -->
+      <a-sound id="guideSound" src="#guide" autoplay="false"></a-sound>
     </a-scene>
   </body>
 </html>
