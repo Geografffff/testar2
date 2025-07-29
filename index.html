@@ -2,38 +2,35 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>AR Мамонт</title>
+    <title>AR Мамонт 360</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <!-- AR.js -->
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+    <!-- A-Frame Extras для масштабування -->
+    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
   </head>
-  <body style="margin: 0; overflow: hidden">
-    <a-scene embedded arjs="sourceType: webcam;">
-      <!-- Маркер -->
-      <a-marker type="pattern" url="pattern-marker.patt">
-        <!-- Мамонт -->
-        <a-entity
-          gltf-model="#mammothModel"
-          position="0 0 0"
-          scale="0.5 0.5 0.5"
-          rotation="0 0 0"
-        ></a-entity>
-        
-        <!-- Кнопка відтворення аудіо -->
-        <a-entity
-          class="clickable"
-          geometry="primitive: plane; height: 0.3; width: 1.2"
-          material="color: red"
-          position="0 0.8 0"
-          text="value: ▶️ Слухати гіда; align: center; color: white"
-          onclick="document.querySelector('#guideSound').components.sound.playSound()"
-        ></a-entity>
-      </a-marker>
 
-      <!-- Камера -->
-      <a-entity camera></a-entity>
+  <body style="margin: 0; overflow: hidden">
+    <a-scene embedded>
+      <!-- Світло -->
+      <a-entity light="type: ambient; color: #ccc"></a-entity>
+      <a-entity light="type: directional; color: #fff; intensity: 0.6" position="1 1 0.5"></a-entity>
+
+      <!-- Камера з контролем -->
+      <a-entity camera look-controls wasd-controls position="0 1.6 3"></a-entity>
+
+      <!-- Плоска поверхня -->
+      <a-plane rotation="-90 0 0" width="10" height="10" color="#eeeeee"></a-plane>
+
+      <!-- Модель мамонта -->
+      <a-entity id="mammoth"
+        gltf-model="#mammothModel"
+        position="0 0 0"
+        scale="1 1 1"
+        rotation="0 180 0"
+        gesture-handler
+      ></a-entity>
 
       <!-- Ресурси -->
       <a-assets>
@@ -41,8 +38,29 @@
         <audio id="guide" src="audio.mp3"></audio>
       </a-assets>
 
-      <!-- Аудіо -->
-      <a-sound id="guideSound" src="#guide" autoplay="false"></a-sound>
+      <!-- Звук -->
+      <a-sound id="guideSound" src="#guide" autoplay="false" position="0 2 0"></a-sound>
     </a-scene>
+
+    <!-- Gesture Handler (приблизно як pinch для масштабу) -->
+    <script src="https://cdn.jsdelivr.net/npm/aframe-gesture-detector@4.0.4/dist/aframe-gesture-detector.min.js"></script>
+    <script>
+      AFRAME.registerComponent('gesture-handler', {
+        schema: { enabled: { default: true } },
+        init: function () {
+          const el = this.el;
+          let scale = 1;
+          this.el.sceneEl.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+          });
+          this.el.sceneEl.addEventListener('gesturechange', function (e) {
+            if (e.scale !== 1) {
+              scale *= e.scale;
+              el.setAttribute('scale', `${scale} ${scale} ${scale}`);
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>
